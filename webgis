@@ -1,0 +1,316 @@
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>webgis</title>
+        <link rel="stylesheet" href="src/leaflet.css">
+        <link rel="stylesheet" href="src/css/bootstrap.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.MousePosition.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
+        <link rel="stylesheet" href="src/plugins/Leaflet.PolylineMeasure.css">
+        <link rel="stylesheet" href="src/plugins/easy-button.css">
+        <link rel="stylesheet" href="src/plugins/leaflet-styleeditor/css">
+        <link rel="stylesheet" href="src/css/font-awesome.min.css">
+        <link rel="stylesheet" href="src/plugins/leaflet.awesome-markers.css">
+        <link rel="stylesheet" href="src/plugins/leaflet-mapkey/MapkeyIcons.css">
+        <link rel="stylesheet" href="src/plugins/leaflet-mapkey/L.Icon.Mapkey.css">
+        <link rel="stylesheet" href="src/plugins/MarkerCluster.css">
+        <link rel="stylesheet" href="src/plugins/leaflet-legend.css">
+        <link rel="stylesheet" href="src/plugins/MarkerCluster.Default.css">
+        <link rel="stylesheet" href="src/plugins/L.Control.Zoomslider.css">
+
+        <script src="src/leaflet-src.js"></script>
+        <script src="src/jquery-3.2.0.min.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="src/plugins/L.Control.MousePosition.js"></script>
+        <script src="src/plugins/L.Control.Sidebar.js"></script>
+        <script src="src/plugins/Leaflet.PolylineMeasure.js"></script>
+        <script src="src/plugins/easy-button.js"></script>
+        <script src="src/plugins/leaflet-providers.js"></script>
+        <script src="src/plugins/leaflet-styleeditor/javascript/Leaflet.StyleEditor.js"></script>
+        <script src="src/plugins/leaflet-styleeditor/javascript/Leaflet.StyleForms.js"></script>
+        <script src="src/plugins/leaflet.ajax.min.js"></script>
+        <script src="src/plugins/leaflet.sprite.js"></script>
+        <script src="src/plugins/leaflet-legend.js"></script>
+        <script src="src/plugins/leaflet.geometryutil.js"></script>
+        <script src="src/plugins/leaflet.awesome-markers.min.js"></script>
+        <script src="src/plugins/leaflet-mapkey/L.Icon.Mapkey.js"></script>
+        <script src="src/plugins/leaflet.markercluster.js"></script>
+        <script src="src/plugins/L.Control.Zoomslider.js"></script>
+        <script src="src/L.TileLayer.BetterWMS.js"></script>
+
+        <style>
+            #mapdiv {
+                height: 100vh;
+            }
+
+            .col-xs-12,
+            .col-xs-6,
+            .col-xs-4 {
+                padding: 3px;
+            }
+
+            #divProject {
+                background-color: beige;
+            }
+
+            #divBUOWL {
+                background-color: #ffffb3;
+            }
+
+            #divEagle {
+                background-color: #ccffb3;
+            }
+
+            #divRaptor {
+                background-color: #e6ffff;
+            }
+
+            .errorMsg {
+                padding: 0;
+                text-align: center;
+                background-color: darksalmon;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <div >
+           <div id="legend">    
+                <section id="legenda_agroecologico">
+                       <b> Agroecológico</b> 
+                    <div>
+                       <img src='http://41.221.204.73:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=15&HEIGHT=15&LAYER=maa:Agroecologica'/> 
+                    </div>
+                </section>
+
+                <section id="legenda_bioclimatico">
+                     <b>Bioclimático</b>
+                  <div >
+                 <img src='http://41.221.204.73:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=maa:Bioclimaticas'/>
+                    </div>
+                    </section>
+               
+               <section id="legenda_Concelho">
+                   <b>Concelho:</b>
+               <img src='http://41.221.204.73:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=maa:Concelho'/>       
+               </section>
+               <section id="legenda_Gestao">
+                   <b>Áreas de Plano Florestal:</b>
+               <img src='http://41.221.204.73:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=maa:plano_gestao_florestal'/>       
+               </section>
+               
+               <section id="Legenda_Intervencao_Reflor">
+                   <b>Intervencao Reflor:</b>
+               <img src='http://41.221.204.73:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=maa:Intervencao_Reflor'/>       
+               </section>
+
+            </div>
+        
+        <div id="mapdiv" class="col-md-15"></div>
+        <script>
+            var mymap;
+            var lyrOSM;
+            var lyrWatercolor;
+            var lyrTopo;
+            var lyrImagery;
+            var lyrOutdoors;
+            var lyrConcelho;
+            var lyrilhas;
+            var lyrInterReflor;
+            var lyrPlanosGestao;
+            var lyrAgroecologica;
+            var lyrMarkerCluster;
+            var lyrVegetação;
+            var lyrBioclimatica;
+            var lyrEscola;
+            var mrkCurrentLocation;
+            var ctlAttribute;
+            var ctlScale;
+            var ctlMouseposition;
+            var ctlEasybutton;
+            var ctlSidebar;
+            var ctlLayers;
+            var ctlLegend;
+            var objBasemaps;
+            var objOverlays;
+            var SliedeMenu;
+            var ctlZoomslider;
+            
+
+
+            $(document).ready(function() {
+
+                mymap = L.map('mapdiv', {
+                    center: [15.5, -23.5],
+                    zoom: 9,
+                    zoomControl: false,
+                    attributionControl: false
+            
+                });
+                
+                
+
+                
+                lyrImagery = L.tileLayer.provider('Esri.WorldImagery');
+                lyrTopo = L.tileLayer.provider('OpenTopoMap');
+                lyrOutdoors = L.tileLayer.provider('Thunderforest.Outdoors');
+                mymap.addLayer(lyrImagery);
+
+                objBasemaps = {
+                    "Imagery": lyrImagery,
+                    "Topo Map": lyrTopo,
+                    "Outdoors": lyrOutdoors,
+
+                };
+
+
+                lyrEscola = L.tileLayer.betterWms('http://41.221.204.73:8080/geoserver/maa/wms',{
+                    layers:'Escolas',
+                    tiled: 'true',
+                    format:'image/png',
+                    transparent:'true',
+                    }).addTo(mymap);
+                
+                  lyrEscola.on('http://41.221.204.73:8080/geoserver/maa/wms', function() {
+                    mymap.fitBounds(lyrEscola.getBounds());
+                });
+                
+                 lyrConcelho = new L.tileLayer.betterWms('http://41.221.204.73:8080/geoserver/maa/wms',{
+                    layers:'Concelho',
+                    format:'image/png',
+                    transparent:'true',
+          
+                    
+                });
+            
+                lyrilhas = L.geoJSON.ajax('data/Ilhas.geojson', {
+                    color: 'Silver',
+                    weight: 1,
+                    fillColor: 'None',
+                    fillOpacity: 0.1
+                });
+                
+                lyrInterReflor = new L.TileLayer.WMS('http://41.221.204.73:8080/geoserver/maa/wms', {
+                    layers:'Intervencao_Reflor',
+                    format:'image/png',
+                    transparent:'true',
+                });
+                
+
+            
+
+                lyrPlanosGestao = new L.TileLayer.WMS('http://41.221.204.73:8080/geoserver/maa/wms', {
+                    layers:'plano_gestao_florestal',
+                    format:'image/png',
+                    transparent:'true',
+                }).addTo(mymap);
+                
+                lyrBioclimatica = new L.TileLayer.WMS('http://41.221.204.73:8080/geoserver/maa/wms', {
+                    layers:'Bioclimaticas',
+                    format:'image/png',
+                    transparent:'true',
+                });
+
+                lyrAgroecologica = new L.TileLayer.WMS('http://41.221.204.73:8080/geoserver/maa/wms', {
+                    layers:'Agroecologica',
+                    format:'image/png',
+                    transparent:'true',
+                });
+                    
+                    objOverlays = {
+                    'Agroecológica': lyrAgroecologica,
+                    'Áreas Intervenção': lyrInterReflor,
+                    'Áreas de Plano Florestal': lyrPlanosGestao,
+                    'Bioclimática': lyrBioclimatica,
+                    'Concelho': lyrConcelho,
+                    'Florestas Pedagógicas': lyrEscola,
+                    'Ilhas': lyrilhas,
+              
+              };
+        
+                ctlLayers = L.control.layers(objBasemaps, objOverlays, {
+                    collapsed: false,
+                    position : 'topleft'
+                    
+                }).addTo(mymap);
+                
+                ctlZoomslider = L.control.zoom({
+                    position: 'topright'
+                }).addTo(mymap);
+                
+                ctlLegend = new L.Control.Legend({
+                    position:'topleft',
+                    controlButton:{title:"Legend"}
+                }).addTo(mymap)
+                
+        
+                $(".legend-container").append($("#legend"));
+                $(".legend-toggle").append($("<i class='legend-toggle-icon fa fa-server fa-2x' style='color:#006400'></i>"));
+
+
+                // *** Filtrar Legendas caixa Seleccao
+
+                const layersToLegends = {
+                    'Áreas de Plano Florestal': 'legenda_Gestao',
+                    'Áreas Intervenção': 'Legenda_Intervencao_Reflor',
+                    'Ilhas': 'legenda_ilha',
+                    'Agroecológica': 'legenda_agroecologico',
+                    'Bioclimática': 'legenda_bioclimatico',
+                    'Concelho':'legenda_Concelho',
+                    
+                };
+
+                Object.values(layersToLegends).forEach((id) => {
+                    $(`#${id}`).hide();
+                });
+
+                mymap.on('overlayadd', function(e) {
+                    $(`#${layersToLegends[e.name]}`).show();s
+                });
+
+                mymap.on('overlayremove', function(e) {
+                    $(`#${layersToLegends[e.name]}`).hide();
+                });
+                
+                
+
+
+                /// *** Fim Legend
+                
+                
+                ///L.TileLayer.BetterWMS.js//
+                
+
+              
+              
+
+             
+                ///FiM L.TileLayer.BetterWMS.js //
+                
+
+                ctlAttribute = L.control.attribution().addTo(mymap);
+                ctlAttribute.addAttribution('OSM');
+                ctlAttribute.addAttribution('&copy; <a href="https://www.reflor.maa.gov.cv/plant/">REFLOR CV</a>');
+
+                ctlScale = L.control.scale({
+                    position: 'bottomleft',
+                    metric: true,
+                    imperial: false,
+                    maxWidth: 100
+                  }).addTo(mymap);
+
+                ctlMouseposition = L.control.mousePosition().addTo(mymap);
+
+            });
+        
+            
+        </script>
+            
+        </div>
+       
+    </body>
+
+    </html>
